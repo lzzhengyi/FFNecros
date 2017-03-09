@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    font-family: "Lucida Console";
+}
+</style>
+</head>
+<body>
+
+<div id="feathers"></div>
+
+<div>
+<input type="button" onclick="revise()" value="Revise" id="reviseButton" />
+<input type="button" onclick="addR(0)" value="primary" id="addAButton" />
+<input type="button" onclick="addR(1)" value="filing" id="addBButton" />
+<input type="button" onclick="addR(2)" value="mechanism" id="addCButton" />
+<input type="button" onclick="addR(3)" value="demo" id="addDButton" />
+<input type="button" onclick="dumpRevised()" value="dumpR" id="dumpRButton" />
+</div>
+
+<div>
+<input type="button" onclick="cDown(0)" value="c0down" id="cd0Button" />
+<input type="button" onclick="cUp(0)" value="c0up" id="cu0Button" />
+<input type="button" onclick="cDump(0)" value="c0dump" id="c0dumpButton" />
+<input type="button" onclick="cRemove(0)" value="c0remove" id="c0removeButton" />
+</div>
+
+<div>
+<input type="button" onclick="cDown(1)" value="c1down" id="cd1Button" />
+<input type="button" onclick="cUp(1)" value="c1up" id="cu1Button" />
+<input type="button" onclick="cDump(1)" value="c1dump" id="c1dumpButton" />
+<input type="button" onclick="cRemove(1)" value="c1remove" id="c1removeButton" />
+</div>
+
+<div>
+<input type="button" onclick="cDown(2)" value="c2down" id="cd2Button" />
+<input type="button" onclick="cUp(2)" value="c2up" id="cu2Button" />
+<input type="button" onclick="cDump(2)" value="c2dump" id="c2dumpButton" />
+<input type="button" onclick="cRemove(2)" value="c2remove" id="c2removeButton" />
+</div>
+
+<div>
+<input type="button" onclick="cDown(3)" value="c3down" id="cd3Button" />
+<input type="button" onclick="cUp(3)" value="c3up" id="cu3Button" />
+<input type="button" onclick="cDump(3)" value="c3dump" id="c3dumpButton" />
+<input type="button" onclick="cRemove(3)" value="c3remove" id="c3removeButton" />
+</div>
+
+<input type="button" onclick="dump()" value="Dump" id="dumpButton" />
+<input type="button" onclick="accel()" value="Accel" id="accelButton" />
+
+
+<script src="JS/tinyqueue.js"></script>
+<script type="text/javascript">
+<!--
+
+var elemNames=["Fire","Ice","Light","Decay","Earth"];
+var robestyles=["furtrimmed","furlined","linen","cotton","ornate","velvet","dazzling","sequined","goldtrimmed","silvertrimmed","rustic","rough","plain","long","baggy","crumpled","torn","frayed","singed","burning","faded","worn","well-pressed","starched","starry","embroidered","inlaid","patterened","striped","polka-dotted","lacey","frilly","goldfoil","silverfoil","shimmering","glossy","waxed","thick","wispy","scholarly"];
+var robes=["alchemist robe","wizard robe","geomancer robe","bishop's robe","dress","ballroom gown","chiton","tunic","toga","hooded cloak","tuxedo","business suit","dress shirt","cloak","cape","monk's habit","royal gown","judge's gown","pulpit robe","choir robe","cassock","thawb","abaya","academic stole","kaftan","tricivara","necromancer's robe","diviner's robe"];
+var heads=["hawk", "crocodile", "hippopotamus", "lion", "bear", "eagle", "viper", "boa", "cobra", "unicorn", "horse", "dog", "jackal", "wolf", "tiger", "cow", "bull", "cat", "buzzard", "fox", "rat", "mouse", "lynx", "swan", "crane", "ibis", "stork", "cassowary", "bird of paradise", "iguana", "falcon", "pelican", "ram", "phoenix", "goose", "ape", "baboon", "turtle", "dragon", "wyrm", "wyvern", "ostrich", "deer", "gazelle", "dove", "crow", "boar", "elephant", "rhinoceros", "giraffe", "goat","osprey","camel","fruitbat","monkey","vampire bat","hyena","cheetah","zebra","donkey"];
+var bodies=["bird-of-prey", "crocodile", "hippopotamus", "lion", "bear", "viper", "unicorn", "horse", "dog", "jackal", "wolf", "tiger", "cow", "bull", "cat", "fox", "rat", "mouse", "lynx", "swan", "crane", "ibis", "stork", "cassowary", "bird of paradise", "iguana", "pelican", "ram", "phoenix", "goose", "ape", "baboon", "turtle", "dragon", "wyrm", "wyvern", "ostrich", "deer", "gazelle", "dove", "crow", "boar", "elephant", "rhinoceros", "giraffe", "goat","camel","serpent","bat"];
+var wings=["hawk","eagle","buzzard","swan", "crane", "ibis", "stork", "cassowary","bird of paradise","falcon", "pelican", "phoenix", "goose","dragon","wyvern","dove","crow","osprey"];
+var tails=["hawk", "crocodile","lion","eagle", "viper", "boa", "cobra", "unicorn", "horse", "dog", "jackal", "wolf", "tiger", "cow", "bull", "cat", "buzzard", "fox", "rat", "mouse", "lynx", "swan", "crane", "ibis", "stork", "cassowary", "bird of paradise", "iguana", "falcon", "pelican","phoenix", "goose", "monkey", "turtle", "dragon", "wyrm", "wyvern", "deer", "gazelle", "dove", "crow", "pig", "elephant","giraffe", "goat","osprey","camel"];
+var goddities=["Oddly bloated", "Extra eye", "Extra eyes", "Covered in eyes", "Covered in hair", "Strangely hairless", "Transparent skin","Glides silently","Writhes bonelessly", "Shivers and shakes", "Upside-down face", "Extremely long neck", "Elongated fingers", "Extra arms", "Skeletally thin", "Reversed head","Pupiless eyes","Elongated arms","No mouth","Faceless","Eyeless","Elongated ears","Elongated nose"];
+var loddities=["Sharp fangs","Pointed ears","Glowing eyes","Floating hair","Sharp horns"];
+var seasons=["spring","summer","autumn","winter"];
+var concepts=["breeze", "storm", "nostalgia", "mist", "drizzle", "stream", "memory", "cloud", "gaze", "dream", "thought", "folly","journey", "stroll", "dance", "twilight", "dawn", "moonrise", "emptiness","remembrance","flight","trembling","confusion","sleep","speculation","vision","aroma","despair","hope","wistfulness","lust","rest","lullabies","song","wandering","falling","descent","haste","panic","regret","loathing","filth","rot","decay","blossoms","leaves","showers","branches","drought","inundation","flooding","darkness","night","noon","afternoon","hours","floating","stone","rushing","rising","hovering","coalescence","drifting","flickering","reminding","yearning","exhaustion","dissolution","dread","dormancy"];
+var tcolors=["AntiqueWhite","Aquamarine","Azure","Bisque","Blue","Brown","Burlywood","CadetBlue","Chartreuse","Chocolate","Coral","Cornsilk","Cyan","OliveGreen","SeaGreen","SlateGray","Pink","SkyBlue","DodgerBlue","Firebrick","Gold","Goldenrod","Green","Honeydew","HotPink","IndianRed","Ivory","Khaki","LavenderBlush","LemonChiffon","Blue","Cyan","Goldenrod","Pink","Salmon","SteelBlue","Yellow","Magenta","Maroon","Orchid","Purple","Misty Rose","NavajoWhite","OliveDrab","Orange","Green","Turquoise","PeachPuff","Pink","Plum","Purple","Red","RosyBrown","RoyalBlue","Salmon","Seashell","Sienna","SlateBlue","SlateGray","Snow","SpringGreen","Tan","Thistle","Tomato","Turquoise","VioletRed","Wheat","Yellow","Aqua","Aquamarine","Beige","Black","BlanchedAlmond","AliceBlue","MidnightBlue","NavyBlue","PowderBlue","SaddleBrown","SandyBrown","Coral","Cornflower","Crimson","Cyan","Fuchsia","Gainsboro","Goldenrod","Gray","DimGray","Gray","WebGray","Green","YellowGreen","ForestGreen","LawnGreen","LimeGreen","SeaGreen","SpringGreen","WebGreen","Indigo","Khaki","Lavender"]
+var greek=["Alpha","Beta","Gamma","Delta","Epsilon","Zeta","Eta","Theta","Iota","Kappa","Lambda","Mu","Nu","Xi","Omicron","Pi","Rho","Sigma","Tau","Upsilon","Phi","Chi","Psi","Omega","Kreska","Ziet","Igrek"]
+var german=["Eins","Zwei","Drei","Vier","Funf","Zekhs","Sieben","Acht","Neun","Zehn","Elf","Zwolf","Dreizehn","Zwanzig"]
+var statNames=["affinity","capacity","body","magic","projection","strike","flash","howling","speed","spells","shield","armor","spiritveil","magicveil","feather","shell","protect","shellpow","protectpow","regenpow","haste","slow"]
+var atkNames=["Storm","Pulse","Flare","Drain","Lance","Beam","Bolt","Dazzle","Meteor"]
+var specNames=["Star Storm","Maelstrom","Black Hole","Gigaflare","Scathe","Radiance","Meteor"]
+var castNames=["Shield","Reflect","Armor","Veil","Blink","Feather","Protect","Shell","Regen","Haste","Slow"];
+var cardNames=["The Arrow","The Big","The Bubbles","The Change","The Cloud","The Create","The Dark","The Dash","The Dream","The Earthy","The Erase","The Fight","The Firey","The Float","The Flower","The Fly","The Freeze","The Glow","The Hope","The Illusion","The Jump","The Libra","The Light","The Little","The Lock","The Loop","The Maze","The Mirror","The Mist","The Move","The Nameless Card","The Nothing","The Power","The Rain","The Return","The Sand","The Shadow","The Shield","The Shot","The Silent","The Sleep","The Snow","The Song","The Storm","The Sweet","The Sword","The Through","The Thunder","The Time","The Twin","The Voice","The Watery","The Wave","The Windy","The Wood"]
+var beastNames=["Hydrabear","Sea Wolf","White Whale","Winter Oceanlion","Sorrownight","Hollowfish","Storm Kraken","Sea Serpent","OceanDragon","Man O War","Tentacle Beast","Ghostsquid","Coralblight","Kelpmare","Leviabyss","Mammoth Shark","Dread Star","Eyeless Horror","Drowned","Siren","Sunken Wraith","Technodryad","Robolamia","Antennymph","Petronaiad","Laserachnid","Glittergorgon","Metromaenad","Sewermaiden","Cryosphinx","Phasenaga","Cybervalkyrie","Styrosiren","Ragnaroid","Holospecter","Mechafury","Pixelpixie","Spritesprite","Photofairy","Clockmaiden","Etherelf","Magimedusa","Bellchimera","Guitarharpy","Psychosiren","Dreamdelphyne","Ekaechidna","Neonaga","Nitronephilim","Lethelilith","Disharmony","Teletelchine","Scissorscylla","Lampempusa","Umbrelladine","Silversylph","Synthsimurgh","Retrokumiho","Betabanshee","Razorbladesith","Nanonorn"];
+var violence=["slays","eliminates","kills","butchers","vivisects","decapitates","assassinates","cuts down","runs through","chops apart","slices apart","impales","murders","devours","boils alive","flays alive","shreds"];
+
+function genClow(){
+	for (var i=0;i<cardNames.length;i++){
+		clow.push(new Clow(cardNames[Math.floor(Math.random()*cardNames.length)]));
+	}
+}
+
+function getViolence(){
+	return " "+violence[Math.floor(Math.random()*violence.length)]+" ";
+}
+
+function Clow(n){
+	this.name=n;
+	this.shield=new Dice(Math.floor(Math.random()*3)+1,Math.floor(Math.random()*19)+2);
+	this.power=new Dice(Math.floor(Math.random()*3)+1,Math.floor(Math.random()*19)+2);
+	this.charge=new Dice(Math.floor(Math.random()*3)+1,Math.floor(Math.random()*19)+2);
+	this.getStyle=Math.random()<0.5;
+	this.getEffect=Math.floor(Math.random()*9);
+	if (Math.random()<0.3){
+		this.envCharge=-1
+	} else {
+		this.envCharge=Math.floor(Math.random()*6);
+	}
+	if (Math.random()<0.3){
+		this.selfCharge=-1
+	} else {
+		this.selfCharge=Math.floor(Math.random()*6);
+	}
+	this.cooldown=Math.floor(Math.random()*3)+1; //time between effects
+	this.armor=0;
+	this.critical=new Dice(Math.floor(Math.random()*3)+1,Math.floor(Math.random()*19)+2);
+	this.getRating=this.power.getMax()/2+"/"+this.shield.getMax()/2+"/"+this.critical.getMax()/2;
+}
+
+function Beast(n){
+	this.name=n;
+	this.kills=0;
+	this.power=new Dice(2,3+Math.floor(Math.random()*12));
+}
+
+function Tower(num){
+	this.name=num;
+	this.floors=[];
+	for (var i=0;i<13;i++){
+		var addme=Math.floor(Math.random()*beasts.length);
+		this.floors.push(beasts[addme]);
+	}
+	this.challenge=function(aspect,aid){
+		console.log(aspect.name+"("+aspect.kills+") challenges Tower "+this.name+" and faces a "+this.floors[0].name+"("+this.floors[0].kills+")!");
+		var aroll=aspect.power.roll()+Math.min(aspect.feathers,1);
+		var troll=this.floors[0].power.roll();
+		if (aroll>troll){
+			console.log(aspect.name+getViolence()+"the "+this.floors[0].name+"! ("+aroll+", "+troll+")");
+			aspect.kills++;
+			if (aspect.power.getMax()<this.floors[0].power.getMax()){
+				console.log(aspect.name+" has earned a feather!");
+				aspect.feathers+=1;
+			} else if (Math.random()<0.01){
+				console.log(aspect.name+" has found a lucky feather!");
+				aspect.feathers+=1;
+			}
+			this.floors.splice(0,1);
+		} else {
+			if (aspect.feathers>0){
+				aspect.feathers-=1;
+				console.log(aspect.name+" barely escapes the "+this.floors[0].name+" at the cost of a feather! ("+aroll+", "+troll+")");
+			} else if (Math.random()>(aspect.maimed+1)/4){
+				aspect.maimed+=1;
+				console.log("One of "+aspect.name+"'s limbs is torn away by the "+this.floors[0].name+"! ("+aroll+", "+troll+")");
+			} else {
+				console.log(aspect.name+" is mercilessly devoured by the "+this.floors[0].name+"! ("+aroll+", "+troll+")");
+				this.floors[0].kills++;			
+				aspects.splice(aid,1);
+				activeAspects--;
+			}
+		}
+	}
+}
+
+function Spell(caster){
+
+}
+
+function Aspect(n){
+	this.color=n;
+	this.name=n + "_" + greek[Math.floor(Math.random()*greek.length)] + german[Math.floor(Math.random()*german.length)];
+	this.myHead=heads[Math.floor(Math.random()*heads.length)];
+	this.myBody=bodies[Math.floor(Math.random()*bodies.length)];
+	this.myWing=wings[Math.floor(Math.random()*wings.length)];
+	this.myTail=tails[Math.floor(Math.random()*tails.length)];
+	if (Math.random<0.5){
+		this.myOddity=goddities[Math.floor(Math.random()*goddities.length)];
+	} else {
+		this.myOddity=loddities[Math.floor(Math.random()*loddities.length)];
+	}
+	this.myConcept=seasons[Math.floor(Math.random()*seasons.length)] + " " + concepts[Math.floor(Math.random()*concepts.length)];
+	this.myGarb=robestyles[Math.floor(Math.random()*robestyles.length)] + " " + robes[Math.floor(Math.random()*robes.length)];
+	this.feathers=Math.floor(Math.random()*3);
+	this.maimed=0;
+	this.kills=0;
+	this.power=new Dice(2,3+Math.floor(Math.random()*10));
+	this.health=rollDice(20,20);
+	this.damage=0;
+	this.shield=0;
+	this.charge=[0,0,0,0,0,0];
+	this.drive=0;
+	if (Math.random()<0.2){
+		this.drive=1;
+	}
+	this.deck=getThreeClow();
+	this.getRating=function(){
+		var ss="";
+		for (var i=0;i<this.deck.length;i++){
+			ss+=this.deck[i].getRating+"::";
+		}
+		return ss;
+	}
+	this.d_rating=this.getRating();
+	this.checkHealth=function(){
+		return "("+(this.health-this.damage)+"/"+this.health+")";
+	}
+}
+
+function Dice(n, f){
+	this.number=n;
+	this.faces=f;
+	this.roll=function(){
+		return rollDice(this.number,this.faces);
+	}
+	this.getMax=function(){
+		return this.number*this.faces;
+	}
+}
+
+function rollDice(dice,faces){
+	var sum=0;
+	for (var i=0;i<dice;i++){
+		sum+=Math.floor(Math.random()*faces);
+	}
+	return sum;
+}
+
+function getRandColor(){
+	return tcolors[Math.floor(Math.random()*tcolors.length)];
+}
+
+function getThreeClow(){
+	if (typeof clow === 'undefined'){
+		genClow();
+	}
+	var clowsel=[];
+	var tosel=3;
+	var remain=clow.length;
+	var curr=0;
+	while (tosel>0){
+		if (Math.random()<tosel/remain){
+			clowsel.push(clow[curr]);
+			tosel-=1;
+		}
+		remain-=1;
+		curr+=1;
+	}
+	return clowsel;
+}
+
+function cRemove(n){
+	var isNull=0;
+	for (var i=0;i<aspects.length;i++){
+		if (null===aspects[i]){
+			isNull+=1;
+		}
+	}
+	if (isNull<=0){
+		aspects[n]=null;
+	} else {
+		console.log("dataset not full, add before removing");
+	}
+}
+
+function dump(){
+	for (var i=0;i<aspects.length;i++){
+		console.log(aspects[i]);
+	}
+	//for (var i=0;i<towers.length;i++){
+	//	console.log(towers[i]);
+	//}
+}
+
+//add 4 new heroes
+function revise(){
+	myFeathers--;
+	aspectDraw=[];
+	for (var i=0;i<4;i++){
+		aspectDraw.push(new Aspect(getRandColor()));
+	}
+	console.log(aspectDraw);
+}
+
+function addR(n){
+	if(aspectDraw.length>0){
+		var replaced=0;
+		for (var i=0;i<aspects.length;i++){
+			if (null===aspects[i]){
+				aspects[i]=aspectDraw[n];
+				replaced+=1;
+				break;
+			}
+		}
+		if (replaced<=0){
+			console.log("error in replacement");
+		} else {
+			aspectDraw=[];
+		}
+	}
+}
+
+//assume that the randomized list from resolve dispute is passed
+//charge and release
+function resolveCharge(alist, elist){
+	for (var i=0;i<alist.length;i++){
+		
+	}
+	for (var i=0;i<elist.length;i++){
+
+	}
+}
+
+function resolveDispute(friends, foes){
+	var alist=[];
+	var elist=[];
+	for (var i=0;i<friends.length;i++){
+		if (null!==friends[i]){
+			if (Math.random()<0.5){
+				alist.unshift(friends[i]);
+			} else {
+				alist.push(friends[i]);
+			}
+		}
+	}
+	for (var i=0;i<foes.length;i++){
+		if (null!==foes[i]){
+			if (Math.random()<0.5 && foes[i].damage<foes[i].health){
+				elist.push(foes[i]);
+			} else {
+				elist.unshift(foes[i]);
+			}
+		}
+	}
+	if (alist.length>0 && elist.length>0){
+
+//algorithm: pick random foe, foe rolls atk or def; if atk,foe counter. if def, foe heals
+//before picking random foe, filter for hp>0
+		for (var i=0;i<alist.length;i++){
+			var liveE=[];
+			for (var j=0;j<elist.length;j++){
+				if (elist[j].damage<elist[j].health){
+					liveE.push(elist[j]);
+				}
+			}
+			if (liveE.length>0){
+			var target=liveE[Math.floor(Math.random()*liveE.length)];
+			var edraw=target.deck[Math.floor(Math.random()*target.deck.length)];
+			var eatk=edraw.power.roll()+edraw.critical.roll();
+			var edef=edraw.shield.roll();
+
+			var adraw=alist[i].deck[Math.floor(Math.random()*alist[i].deck.length)];
+			var admg=adraw.power.roll()+adraw.critical.roll();
+			console.log(alist[i].name+" invokes "+adraw.name+" against "+target.name+" for "+admg+"! "+target.checkHealth());
+			if (target.armor>0){
+				admg=Math.max(admg-target.armor,0);
+				console.log(target.name+"'s armor absorbs the hit! (-"+target.armor+")");
+				target.armor=0;
+			}
+			target.damage+=Math.max(admg,0);
+			if (edef>eatk){
+				target.damage=Math.max(0,target.damage-edef);
+				console.log("The hostile "+target.name+" invokes "+edraw.name+" and regenerates "+edef+"! "+target.checkHealth());
+			} else {
+				alist[i].damage+=eatk;
+				console.log("The hostile "+target.name+" invokes "+edraw.name+" and counterattacks "+alist[i].name+" for "+eatk+"!"+alist[i].checkHealth());
+				if (alist[i].armor>0){
+					eatk=Math.max(eatk-alist[i].armor,0);
+					console.log(alist[i].name+"'s armor absorbs the hit! (-"+alist[i].armor+")");
+					alist[i].armor=0;
+				}
+			}
+			}
+		}
+
+		for (var i=0;i<elist.length;i++){
+			var liveE=[];
+			for (var j=0;j<alist.length;j++){
+				if (alist[j].damage<alist[j].health){
+					liveE.push(alist[j]);
+				}
+			}
+			if (liveE.length>0){ //not indented
+			var target=liveE[Math.floor(Math.random()*liveE.length)];
+			var edraw=target.deck[Math.floor(Math.random()*target.deck.length)];
+			var eatk=edraw.power.roll()+edraw.critical.roll();
+			var edef=edraw.shield.roll();
+
+			var adraw=elist[i].deck[Math.floor(Math.random()*elist[i].deck.length)];
+			var admg=adraw.power.roll()+edraw.critical.roll();
+			console.log("The hostile "+elist[i].name+" invokes "+adraw.name+" against "+target.name+" for "+admg+"!"+target.checkHealth());
+			if (target.armor>0){
+				admg=Math.max(admg-target.armor,0);
+				console.log(target.name+"'s armor absorbs the hit! (-"+target.armor+")");
+				target.armor=0;
+			}
+			target.damage+=Math.max(admg,0);
+			if (edef>eatk){
+				target.damage=Math.max(0, target.damage-edef);
+				console.log(target.name+" invokes "+edraw.name+" and regenerates "+edef+"!"+target.checkHealth());
+			} else {
+				console.log(target.name+" invokes "+edraw.name+" and counterattacks "+elist[i].name+" for "+eatk+"!"+elist[i].checkHealth());
+				if (elist[i].armor>0){
+					eatk=Math.max(eatk-elist[i].armor,0);
+					console.log(elist[i].name+"'s armor absorbs the hit! (-"+elist[i].armor+")");
+					elist[i].armor=0;
+				}
+				elist[i].damage+=eatk;
+			}
+			} //not indented
+		}
+	}
+	for (var i=0;i<friends.length;i++){
+		if (friends[i] !==null && friends[i].damage>=friends[i].health){
+			friends[i]=null;
+		}
+	}
+	for (var i=foes.length-1;i>=0;i--){
+		if (foes[i] !==null && foes[i].damage>=foes[i].health){
+			foes.splice(i,1);
+			myFeathers+=1;
+		}
+	}
+	console.log("*****");
+}
+
+function accel(){
+	if (timeron){
+		window.clearInterval(wtimer);
+		timeron=0>1;
+	} else {
+		wtimer=window.setInterval(tick1,1000);
+		timeron=1>0;
+	}
+}
+
+function tick1(){
+	tickRound(nallies,nfoes);
+}
+
+function initRound(){
+	for (var i=0;i<nallies.length;i++){
+		if (nallies[i].health>nallies[i].damage){
+			resolveInit(nallies,nfoes,nallies[i]);
+		}
+	}
+	for (var i=0;i<nfoes.length;i++){
+		if (nfoes[i].health>nfoes[i].damage){
+			resolveInit(nallies,nfoes,nfoes[i]);
+		}
+	}
+}
+
+function tick0(){
+	if (Math.random()<0.01){
+		console.log("A windfall! You find a feather!");
+		myFeathers+=1;
+	}
+	feathers.innerHTML=myFeathers;
+	var checkvalid=0;
+	for (var i=0;i<aspects.length;i++){
+		if (null!==aspects[i]){
+			checkvalid+=1;
+		}
+	}
+	if (checkvalid>0){
+		dump();
+		if (e_aspects.length<1 && [] !== e_aspects){
+			for (var i=0;i<aspects.length;i++){
+				if (null!==aspects[i]){
+					aspects[i].damage=0;
+				}
+			}
+			console.log("All lots cleared of impairment");
+			var dice=new Dice(2,3);
+			var num=dice.roll();
+			myFeathers+=1;
+			for (var i=0;i<num;i++){
+				e_aspects.push(new Aspect(getRandColor()));
+			}
+		} else {
+			resolveDispute(aspects, e_aspects);
+		}
+	}
+}
+
+//*****************************************************************************
+
+var ultiNames=[
+"Ultima", //basic attack, calculated with 5/4 damage
+"Astra", //hit 1-4x at 50% power
+"Crescent", //hit 2x at 80% accuracy
+"Chronicle", //hit 2x at 90% accuracy with phys and magic
+"Flare", //20% chance to miss, 20% chance to do 1.5% damage
+"Death", //80% chance to do max damage no matter what
+"Meteor", //hit 5x at 20% power
+"Gravity", //do damage equal to max of enemy curr hp/4, own max hp, cap at 9999
+"Scathe", //clear veils and blink before dealing damage
+"Oblivion",  //do damage ignoring buffs and debuffs
+"Vehemence", //inflict poison damage equal to attack/10, then deal damage equal to foe poison
+"Firestorm", //strengthen fire and null foe ice
+"Maelstrom", //strengthen water and null foe fire
+"Icestorm", //strengthen ice and null foe water
+"Thunderstorm", //strengthen elec and null foe wind
+"Windstorm", //strengthen wind and null foe earth
+"Crystal Storm", //strengthen earth and null foe elec
+"Quasar", //strengthen light and null foe dark
+"Shadowstorm", //strengthen dark and null foe light
+"Dimension Rend", //when it kills, target cannot be resurrected
+"Bloody Knife", //increased damage by damage taken
+"Hexaslash",
+"Triple Cross",
+"Grand Trinity",
+"Metathesis",
+"Spirit Howling" //increased damage by poison and channeled elements
+]; 
+
+var actiNames=[
+"Vampire", //heal self
+"Restoration", //heal team
+"Blade Dance", //buff phys
+"Magic Hymn", //buffs magic
+"Dragonskin", //buffs pdef
+"Prism Scale", //buffs mdef
+"Invigoration", //buffs speed
+"Indolence", //slows enemies
+"Shadow Dance", //casts blink on self
+"Shadow Figures", //casts blink on team
+"Shimmermail", //casts screen on self
+"Shimmerwall", //casts screen on party
+"Shield Wing", //casts veil on self
+"Guardian Wing", //casts veil on party
+"Panacea", //clear poison from party
+"Decadence", //poison target
+"Channel Fire", //increase fire
+"Channel Ice", 
+"Channel Water", 
+"Channel Thunder", 
+"Channel Wind", 
+"Channel Earth", 
+"Channel Light", 
+"Channel Dark",
+"Nihil", //remove status from random party member
+"Breath of Life" //chance to raise party member
+];
+
+var initNames=[
+"Clear Mind", //fully charged at battle start
+"Angelic Wing", //grant reraise at battle start
+"Aeon Drive", //mboost
+"Dragon Roar", //pboost
+"Aeon Roar", //mboost
+"Dragon Drive", //pboost
+"Hyperdrive" //sboost
+]
+
+var chargeAttacks={
+"Kaleidoscope":1,
+"White Wind":3,
+"Phoenixfire":10,
+"Dimension Vortex":5,
+"Muspelheim":3,
+"Niflheim":3,
+"Deluge":3,
+"Ragnarok":3,
+"Tempest":3,
+"Quake":3,
+"Armageddon":3,
+"Apocalypse":3,
+"Tranquility":3, //reset negative stats
+"":7,
+"Desert Howling":2, //random stat alterations
+};
+
+function ChargeAttack(n){
+	this.name=n;
+	this.charge=0;
+}
+
+function Naspect (n){
+	this.ally=1;
+	this.name=n;
+	this.damage=0;
+	this.poison=0;
+	this.blink=0; //reduce damage to 0
+	this.veil=0; //chance to reduce damage to 0 (consumed)
+	this.screen=0; //halve damage taken if damage>0
+	this.charge=0;
+	this.reraise=0;
+	this.countdown=0;
+	this.dmatk=0;
+	this.dpatk=0;
+	this.dspd=0;
+	this.dpdef=0;
+	this.dmdef=0;
+	this.fire=0;
+	this.wate=0;
+	this.fros=0;
+	this.elec=0;
+	this.wind=0;
+	this.eart=0;
+	this.ligh=0;
+	this.dark=0;
+	this.permadeath=0;
+	this.health=Math.min(rollDice(40,300),9999);
+	this.matk=Math.min(rollDice(40,300),9999);
+	this.patk=Math.min(rollDice(40,300),9999);
+	this.speed=rollDice(1,6)+10;
+	this.pdef=Math.min(rollDice(40,300),9999);
+	this.mdef=Math.min(rollDice(40,300),9999);
+	this.attackID=Math.floor(Math.random()*ultiNames.length);
+	this.activeIDs=[Math.floor(Math.random()*actiNames.length),Math.floor(Math.random()*actiNames.length)];
+	this.counterID=0;
+	this.initIDs=[Math.floor(Math.random()*initNames.length)];
+	this.chargeID=0;
+	this.resolveDamage=function(dam, acc){
+		var veiltext="";
+		var screentext="";
+		if (dam>0){
+			if (this.veil>0){
+				this.veil-=1;
+				veiltext=this.name+"'s veil is burned! ";
+				if (Math.random()<0.5){
+					return (veiltext+this.name+"'s veil dissipates the attack!");
+				}
+			}
+			if (this.blink>0){
+				this.blink-=1;
+				var stable="";
+				if (this.blink===0){
+					stable=" "+this.name+" returns to solidity!";
+				}
+				return (veiltext+this.name+"'s phased form ignores the attack!"+stable);
+			}
+			if (this.screen>0){
+				this.screen-=1;
+				dam=Math.floor(dam/2);
+				var fade="";
+				if (this.screen===0){
+					fade=" "+this.name+"'s screen fades!";
+				}
+				screentext=this.name+"'s screen weakens the attack."+fade+" ";
+			}
+			if (Math.random()<acc){
+				dam=Math.min(9999,dam);
+				this.damage+=dam;
+				var dtext="";
+				if (this.reraise>0 && this.damage>=this.health){
+					this.reraise-=1;
+					this.damage=Math.floor(this.health*9/10);
+					this.poison=0;
+					dtext=(" "+this.name+" falls but is reraised!");
+				}
+				if (this.damage>=this.health){
+					this.poison=0;
+					dtext=(" "+this.name+" falls and stops moving...");
+				}
+				return(veiltext+screentext+this.name+" takes "+dam+" damage!"+dtext);
+			}
+		}
+		return(veiltext+screentext+this.name+" dodges the attack!");
+	}
+}
+
+function tickRound(ally, foe){
+	for (var i=0;i<ally.length;i++){
+		if (ally[i].damage<ally[i].health){
+			ally[i].charge+=1;
+			ally[i].countdown+=1;
+			if (ally[i].countdown>=ally[i].speed-ally[i].dspd){
+				ally[i].countdown=0;
+				resolveActor(ally,foe,ally[i]);
+				resolveActive(ally,foe,ally[i]);
+				if (ally[i].poison>0){
+					console.log(ally[i].resolveDamage(ally[i].poison,1));
+				}
+			}
+		} else {
+			console.log(ally[i].name+" is dead");
+		}
+	}
+	for (var i=0;i<foe.length;i++){
+		if (foe[i].damage<foe[i].health){
+			foe[i].charge+=1;
+			foe[i].countdown+=1;
+			if (foe[i].countdown>=foe[i].speed-foe[i].dspd){
+				foe[i].countdown=0;
+				resolveActor(ally,foe,foe[i]);
+				resolveActive(ally,foe,foe[i]);
+				if (foe[i].poison>0){
+					console.log(foe[i].resolveDamage(foe[i].poison,1));
+				}
+			}
+		}
+	}
+	console.log(ally);
+	console.log(foe);
+}
+
+function resolveActor(ally, foe, actor){
+	var liveA=[];
+	var liveE=[];
+	for (var i=0;i<ally.length;i++){
+		if (ally[i].damage<ally[i].health){
+			liveA.push(ally[i]);
+		}
+	}
+	for (var i=0;i<foe.length;i++){
+		if (foe[i].damage<foe[i].health){
+			liveE.push(foe[i]);
+		}
+	}
+	if (liveA.length>0 && liveE.length>0){
+		var target;
+		if (actor.ally==1){ //if actor is an ally
+			target=liveE[Math.floor(Math.random()*liveE.length)];
+		} else {
+			target=liveA[Math.floor(Math.random()*liveA.length)];
+		}
+
+		//resolve attacks
+
+		if ("Astra"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Astra against "+target.name+"!");
+			var occur=1+Math.floor(Math.random()*4);
+			for (var j=0;j<occur;j++){
+				var damage=Math.floor((5000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
+				console.log(target.resolveDamage(damage,1));
+			}
+		} else if ("Crescent"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Crescent against "+target.name+"!");
+			var occur=2;
+			for (var j=0;j<occur;j++){
+				var damage=Math.floor((10000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
+				console.log(target.resolveDamage(damage,0.9));
+			}
+		} else if ("Chronicle"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Chronicle against "+target.name+"!");
+			var damage=Math.floor((10000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
+			console.log(target.resolveDamage(damage,0.9));
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef)));
+			console.log(target.resolveDamage(damage,0.9));
+		} else if ("Flare"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Flare against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef)));
+			if (Math.random()<0.25){
+				damage=Math.floor(damage*2);
+			}
+			console.log(target.resolveDamage(damage,0.8));
+		} else if ("Death"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Death against "+target.name+"!");
+			console.log(target.resolveDamage(10000,0.8));
+		} else if ("Meteor"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Meteor against "+target.name+"!");
+			var occur=10;
+			for (var j=0;j<occur;j++){
+				var damage=Math.floor((1000*actor.matk*(actor.dmatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
+				console.log(target.resolveDamage(damage,0.8));
+			}
+		} else if ("Gravity"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Gravity against "+target.name+"!");
+			damage=Math.floor(Math.max(actor.health/4,target.health-target.damage)/4);
+			console.log(target.resolveDamage(damage,0.9));
+		} else if ("Scathe"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Scathe against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef)));
+			if (target.blink>0){
+				target.blink=0;
+				console.log(target.name+" is exposed!");
+			} else if (target.veil>0){
+				target.veil=0;
+				console.log(target.name+"'s veil is stripped away!");
+			}
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Oblivion"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Oblivion against "+target.name+"!");
+			var damage=Math.floor((10000*actor.patk*(0.8+Math.random()*0.4))/target.pdef);
+			target.dpatk=0;
+			target.dmatk=0;
+			target.dpdef=0;
+			target.dmdef=0;
+			console.log(target.name+"'s auras are dispelled!");
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Vehemence"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Vehemence against "+target.name+"!");
+			target.poison+=Math.floor(2000*(actor.matk*(actor.dmatk+10))/(target.mdef*(target.dmdef+10)));
+			var damage=target.poison;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Firestorm"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Firestorm against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wate+10))));
+			actor.fire+=1;
+			target.fros=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Maelstrom"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Maelstrom against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fros+10))));
+			actor.wate+=1;
+			target.fire=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Icestorm"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Icestorm against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fire+10))));
+			actor.fros+=1;
+			target.wate=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Thunderstorm"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Thunderstorm against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.elec+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.eart+10))));
+			actor.elec+=1;
+			target.wind=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Windstorm"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Windstorm against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.wind+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.elec+10))));
+			actor.wind+=1;
+			target.eart=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Crystal Storm"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Crystal Storm against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.eart+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wind+10))));
+			actor.eart+=1;
+			target.elec=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Quasar"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Quasar against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
+			actor.ligh+=1;
+			target.dark=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Shadowstorm"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Shadowstorm against "+target.name+"!");
+			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
+			actor.dark+=1;
+			target.ligh=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Bloody Knife"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Bloody Knife against "+target.name+"!");
+			var damage=Math.floor((6666*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))))+actor.damage;
+			actor.dark+=1;
+			target.ligh=0;
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Spirit Howling"==ultiNames[actor.attackID]){
+			var damage;
+			console.log(actor.name+" invokes Spirit Howling against "+target.name+"!");
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wate+10))));
+			console.log(target.resolveDamage(damage,1));
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fros+10))));
+			console.log(target.resolveDamage(damage,1));
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fire+10))));
+			console.log(target.resolveDamage(damage,1));
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.elec+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.eart+10))));
+			console.log(target.resolveDamage(damage,1));
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.wind+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.elec+10))));
+			console.log(target.resolveDamage(damage,1));
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.eart+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wind+10))));
+			console.log(target.resolveDamage(damage,1));
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
+			console.log(target.resolveDamage(damage,1));
+			damage=Math.floor((1200*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
+			console.log(target.resolveDamage(damage,1));
+		} else if ("Hexaslash"==ultiNames[actor.attackID]){
+			var damage;
+			console.log(actor.name+" invokes Hexaslash against "+target.name+"!");
+			damage=Math.floor((2000*actor.patk*(actor.dpatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.wate+10))));
+			console.log(target.resolveDamage(damage,0.8));
+			damage=Math.floor((2000*actor.patk*(actor.dpatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.fros+10))));
+			console.log(target.resolveDamage(damage,0.8));
+			damage=Math.floor((2000*actor.patk*(actor.dpatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.fire+10))));
+			console.log(target.resolveDamage(damage,0.8));
+			damage=Math.floor((2000*actor.patk*(actor.dpatk+10)*(actor.elec+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.eart+10))));
+			console.log(target.resolveDamage(damage,0.8));
+			damage=Math.floor((2000*actor.patk*(actor.dpatk+10)*(actor.wind+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.elec+10))));
+			console.log(target.resolveDamage(damage,0.8));
+			damage=Math.floor((2000*actor.patk*(actor.dpatk+10)*(actor.eart+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.wind+10))));
+			console.log(target.resolveDamage(damage,0.8));
+		} else if ("Triple Cross"==ultiNames[actor.attackID]){
+			var damage;
+			console.log(actor.name+" invokes Triple Cross against "+target.name+"!");
+			damage=Math.floor((3600*actor.matk*(actor.dmatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wate+10))));
+			console.log(target.resolveDamage(damage,0.9));
+			damage=Math.floor((3600*actor.matk*(actor.dmatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fros+10))));
+			console.log(target.resolveDamage(damage,0.9));
+			damage=Math.floor((3600*actor.matk*(actor.dmatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fire+10))));
+			console.log(target.resolveDamage(damage,0.9));
+		} else if ("Grand Trinity"==ultiNames[actor.attackID]){
+			var damage;
+			console.log(actor.name+" invokes Grand Trinity against "+target.name+"!");
+			damage=Math.floor((3600*actor.matk*(actor.dmatk+10)*(actor.elec+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.eart+10))));
+			console.log(target.resolveDamage(damage,0.9));
+			damage=Math.floor((3600*actor.matk*(actor.dmatk+10)*(actor.wind+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.elec+10))));
+			console.log(target.resolveDamage(damage,0.9));
+			damage=Math.floor((3600*actor.matk*(actor.dmatk+10)*(actor.eart+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wind+10))));
+			console.log(target.resolveDamage(damage,0.9));
+		} else if ("Metathesis"==ultiNames[actor.attackID]){
+			var damage;
+			console.log(actor.name+" invokes Metathesis against "+target.name+"!");
+			damage=Math.floor((2400*actor.patk*(actor.dpatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.dark+10))));
+			console.log(target.resolveDamage(damage,0.9));
+			damage=Math.floor((2400*actor.patk*(actor.dpatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.ligh+10))));
+			console.log(target.resolveDamage(damage,0.9));
+			damage=Math.floor((2400*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
+			console.log(target.resolveDamage(damage,0.9));
+			damage=Math.floor((2400*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
+			console.log(target.resolveDamage(damage,0.9));
+		} else if ("Dimension Rend"==ultiNames[actor.attackID]){
+			console.log(actor.name+" invokes Dimension Rend against "+target.name+"!");
+			var damage=Math.floor((10000*actor.patk*(0.4+Math.random()))/target.pdef);
+			target.dpatk=0;
+			target.dmatk=0;
+			target.dpdef=0;
+			target.dmdef=0;
+			target.dspd=Math.min(0,target.dspd);
+			console.log(target.name+"'s auras are dispelled!");
+			console.log(target.resolveDamage(damage,1));
+			if (target.damage>target.health){
+				target.permadeath=1;
+				console.log(target.name+" is sucked into a whirling vortex with a horrible scream!");
+			}
+		} else {
+			console.log(actor.name+" invokes Ultima against "+target.name+"!");
+			var damage=Math.floor((12000*actor.matk*(actor.dmatk+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef)));
+			console.log(target.resolveDamage(damage,1));
+		}
+	}
+	
+}
+
+function resolveInit(ally, foe, actor){
+	var liveA=[];
+	var liveE=[];
+	for (var i=0;i<ally.length;i++){
+		if (ally[i].damage<ally[i].health){
+			liveA.push(ally[i]);
+		}
+	}
+	for (var i=0;i<foe.length;i++){
+		if (foe[i].damage<foe[i].health){
+			liveE.push(foe[i]);
+		}
+	}
+	//resolve inits here)
+	for (var i=0;i<actor.initIDs.length;i++){
+		if ("Clear Mind"==initNames[actor.initIDs[i]]){
+			actor.charge=0;
+			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
+		} else if ("Angelic Wing"==initNames[actor.initIDs[i]]){
+			actor.reraise=0;
+			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
+		} else if ("Aeon Roar"==initNames[actor.initIDs[i]]){
+			actor.dmatk=5;
+			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
+		} else if ("Dragon Roar"==initNames[actor.initIDs[i]]){
+			actor.dpatk=5;
+			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
+		} else if ("Hyperdrive"==initNames[actor.initIDs[i]]){
+			actor.dspd=2;
+			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
+		} else if ("Aeon Drive"==initNames[actor.initIDs[i]]){
+			actor.dmdef=5;
+			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
+		} else if ("Dragon Drive"==initNames[actor.initIDs[i]]){
+			actor.dpdef=5;
+			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
+		}
+	}
+}
+
+function resolveActive(ally, foe, actor){
+	var liveA=[];
+	var liveE=[];
+	for (var i=0;i<ally.length;i++){
+		if (ally[i].damage<ally[i].health){
+			liveA.push(ally[i]);
+		}
+	}
+	for (var i=0;i<foe.length;i++){
+		if (foe[i].damage<foe[i].health){
+			liveE.push(foe[i]);
+		}
+	}
+
+	for (var i=0;i<actor.activeIDs.length;i++){
+		if ("Vampire"==actiNames[actor.activeIDs[i]]){
+			var vamp=Math.floor(actor.patk/2);
+			actor.damage=Math.max(0,actor.damage-vamp);
+			console.log(actor.name+" regenerates "+vamp+" damage!");
+		} else if ("Restoration"==actiNames[actor.activeIDs[i]]){
+			var vamp=Math.floor(actor.damage-actor.matk/2);
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].damage=Math.max(0,targets[j].damage-vamp);
+				console.log(targets[j].name+" is healed of "+vamp+" damage by "+actor.name+"'s Restoration!");
+			}
+		} else if ("Blade Dance"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].dpatk=Math.min(10,targets[j].dpatk+1);
+				console.log(targets[j].name+" is inspired by "+actor.name+"'s Blade Dance!");
+			}
+		} else if ("Magic Hymn"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].dmatk=Math.min(10,targets[j].dmatk+1);
+				console.log(targets[j].name+" is inspired by "+actor.name+"'s Mana Hymn!");
+			}
+		} else if ("Dragonskin"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].dpdef=Math.min(10,targets[j].dpdef+1);
+				console.log(targets[j].name+" is enshrouded in "+actor.name+"'s Dragonskin!");
+			}
+		} else if ("Prism Scale"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].dmdef=Math.min(10,targets[j].dmdef+1);
+				console.log(targets[j].name+" is enshrouded in "+actor.name+"'s Prism Scale!");
+			}
+		} else if ("Invigoration"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].dspd=Math.min(10,targets[j].dspd+1);
+				console.log(targets[j].name+" is inspired by "+actor.name+"'s Invigoration!");
+			}
+		}  else if ("Indolence"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1!=actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].dspd=Math.max(-10,targets[j].dspd-1);
+				console.log(targets[j].name+" is enmired by "+actor.name+"'s Indolence!");
+			}
+		} else if ("Shadow Dance"==actiNames[actor.activeIDs[i]]){
+			actor.blink=Math.min(1,actor.blink+1);
+			console.log(actor.name+" begins flickering after "+actor.name+"'s Shadow Dance!");
+		} else if ("Shadow Wind"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].blink=Math.min(1,targets[j].blink+1);
+				console.log(targets[j].name+" begins flickering after "+actor.name+"'s Shadow Wind!");
+			}
+		} else if ("Shimmermail"==actiNames[actor.activeIDs[i]]){
+			actor.screen=Math.min(3,actor.screen+1);
+			console.log(actor.name+" gains Shimmermail!");
+		} else if ("Shimmerwall"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].screen=Math.min(3,targets[j].screen+1);
+				console.log(targets[j].name+" is shielded by "+actor.name+"'s Shimmerwall!");
+			}
+		} else if ("Shield Wing"==actiNames[actor.activeIDs[i]]){
+			actor.veil=Math.min(2,actor.veil+1);
+			console.log(actor.name+" is covered by a Shielding Wing!");
+		} else if ("Guardian Wing"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].veil=Math.min(1,targets[j].veil+1);
+				console.log(targets[j].name+" is embraced by "+actor.name+"'s Guardian Wing!");
+			}
+		} else if ("Panacea"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				if (targets[j].poison>0){
+					targets[j].poison=0;
+					console.log(targets[j].name+" is purified by "+actor.name+"'s Panacea!");
+				}
+			}
+		} else if ("Decadence"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1!=actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				if (Math.random()<0.5){
+					targets[j].poison+=Math.floor(actor.matk/5);
+					console.log(targets[j].name+" is infected by "+actor.name+"'s Decadence!");
+				}
+			}
+		} else if ("Channel Fire"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].fire=Math.min(10,targets[j].fire+1);
+				console.log(actor.name+" channels Fire into "+targets[j].name+"!");
+			}
+		} else if ("Channel Water"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].wate=Math.min(10,targets[j].wate+1);
+				console.log(actor.name+" channels Water into "+targets[j].name+"!");
+			}
+		} else if ("Channel Ice"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].fros=Math.min(10,targets[j].fros+1);
+				console.log(actor.name+" channels Ice into "+targets[j].name+"!");
+			}
+		} else if ("Channel Thunder"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].elec=Math.min(10,targets[j].elec+1);
+				console.log(actor.name+" channels Thunder into "+targets[j].name+"!");
+			}
+		} else if ("Channel Wind"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].wind=Math.min(10,targets[j].wind+1);
+				console.log(actor.name+" channels Wind into "+targets[j].name+"!");
+			}
+		} else if ("Channel Earth"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].eart=Math.min(10,targets[j].eart+1);
+				console.log(actor.name+" channels Earth into "+targets[j].name+"!");
+			}
+		} else if ("Channel Light"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].ligh=Math.min(10,targets[j].ligh+1);
+				console.log(actor.name+" channels Light into "+targets[j].name+"!");
+			}
+		} else if ("Channel Dark"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].dark=Math.min(10,targets[j].dark+1);
+				console.log(actor.name+" channels Dark into "+targets[j].name+"!");
+			}
+		} else if ("Channel Brilliance"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=liveA;
+			} else {
+				targets=liveE;
+			}
+			for (var j=0;j<targets.length;j++){
+				targets[j].fire=Math.min(10,targets[j].fire+1);
+				targets[j].wate=Math.min(10,targets[j].wate+1);
+				targets[j].fros=Math.min(10,targets[j].fros+1);
+				targets[j].wind=Math.min(10,targets[j].wind+1);
+				targets[j].elec=Math.min(10,targets[j].elec+1);
+				targets[j].eart=Math.min(10,targets[j].eart+1);
+				targets[j].ligh=Math.min(10,targets[j].ligh+1);
+				targets[j].dark=Math.min(10,targets[j].dark+1);
+				console.log(actor.name+" channels power into "+targets[j].name+"!");
+			}
+		} else if ("Breath of Life"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1===actor.ally){
+				targets=ally;
+			} else {
+				targets=foe;
+			}
+			var raiseme=targets[Math.floor(Math.random()*targets.length)];
+			if (raiseme.damage>raiseme.health && raiseme.permadeath===0){
+				raiseme.damage=Math.floor(raiseme.health*9/10);
+				console.log(actor.name+" breathes life into "+raiseme.name+"!");
+			} else {
+				raiseme.damage=Math.floor(raiseme.damage/2);
+				console.log(actor.name+" heals "+raiseme.name+" with a puff of breath!");
+			}
+		} else if ("Nihil"==actiNames[actor.activeIDs[i]]){
+			var targets;
+			if (1!=actor.ally){
+				targets=ally;
+			} else {
+				targets=foe;
+			}
+			var raiseme=targets[Math.floor(Math.random()*targets.length)];
+			raiseme.dmatk=0;
+			raiseme.dpatk=0;
+			raiseme.dspd=0;
+			raiseme.dpdef=0;
+			raiseme.dmdef=0;
+			console.log(actor.name+" blasts "+raiseme.name+" with scathing breath!");
+		}
+	}
+
+}
+
+var nallies=[];
+var nfoes=[];
+
+//*****************************************************************************
+
+var beasts=[];
+var eggs=[];
+var aspects=[];
+var e_aspects=[];
+var towers=[];
+var clow=[];
+var aspectDraw=[];
+var activeAspects=0;
+var myFeathers=0;
+
+genClow();
+
+for (var i=0;i<beastNames.length;i++){
+	beasts.push(new Beast(beastNames[i]));
+}
+
+for (var i=0;i<german.length;i++){
+	towers.push(new Tower(german[i]));
+}
+
+for (var i=0;i<4;i++){
+	aspects.push(new Aspect(getRandColor()));
+	activeAspects++;
+}
+
+for (var i=0;i<5;i++){
+	nallies.push(new Naspect(getRandColor()));
+}
+var nfoe=new Naspect("Necros");
+nfoe.health=999999;
+nfoe.ally=0;
+nfoe.speed=13;
+nfoe.activeIDs.push(10);
+nfoe.activeIDs.push(12);
+nfoe.matk=nfoe.matk/4;
+nfoe.patk=nfoe.matk/4;
+nfoe.mdef=nfoe.mdef*2;
+nfoe.pdef=nfoe.pdef*2;
+nfoes.push(nfoe);
+
+initRound();
+var wtimer=window.setInterval(tick1,1000);
+var timeron=0<1;
+
+
+//-->
+</script>
+</body>
