@@ -561,7 +561,7 @@ var chargeNames={
 "Armageddon":3,
 "Apocalypse":3,
 "Tranquility":3, //reset negative stats
-"":7,
+"Whirling Wing":4, //attack and buff defenses
 "Desert Howling":2, //random stat alterations
 };
 
@@ -666,12 +666,22 @@ function Naspect (n){
 }
 
 function tickRound(ally, foe){
+	var liveA=[];
+	var liveE=[];
 	for (var i=0;i<ally.length;i++){
 		if (ally[i].damage<ally[i].health){
+			liveA.push(ally[i]);
+		}
+	}
+	for (var i=0;i<foe.length;i++){
+		if (foe[i].damage<foe[i].health){
+			liveE.push(foe[i]);
+		}
+	}
+	var liveActors = liveA.length>0 && liveE.length>0;
+	for (var i=0;i<ally.length && liveActors;i++){
+		if (ally[i].damage<ally[i].health){
 			resolveCharge(ally,foe,ally[i]);
-			for (var j=0;j<ally[i].chargeIDs.length;j++){
-				ally[i].chargeIDs[j].charge++;
-			}
 			ally[i].countdown+=1;
 			if (ally[i].countdown>=ally[i].speed-ally[i].dspd){
 				ally[i].countdown=0;
@@ -680,17 +690,17 @@ function tickRound(ally, foe){
 				if (ally[i].poison>0){
 					console.log(ally[i].resolveDamage(ally[i].poison,1));
 				}
+				for (var j=0;j<ally[i].chargeIDs.length;j++){
+					ally[i].chargeIDs[j].charge++;
+				}
 			}
 		} else {
 			console.log(ally[i].name+" is dead");
 		}
 	}
-	for (var i=0;i<foe.length;i++){
+	for (var i=0;i<foe.length && liveActors;i++){
 		if (foe[i].damage<foe[i].health){
 			resolveCharge(ally,foe,foe[i]);
-			for (var j=0;j<foe[i].chargeIDs.length;j++){
-				foe[i].chargeIDs[j].charge++;
-			}
 			foe[i].countdown+=1;
 			if (foe[i].countdown>=foe[i].speed-foe[i].dspd){
 				foe[i].countdown=0;
@@ -699,11 +709,16 @@ function tickRound(ally, foe){
 				if (foe[i].poison>0){
 					console.log(foe[i].resolveDamage(foe[i].poison,1));
 				}
+				for (var j=0;j<foe[i].chargeIDs.length;j++){
+					foe[i].chargeIDs[j].charge++;
+				}
 			}
 		}
 	}
-	console.log(ally);
-	console.log(foe);
+	if (liveActors){
+		console.log(ally);
+		console.log(foe);
+	}
 }
 
 function resolveActor(ally, foe, actor){
@@ -731,7 +746,7 @@ function resolveActor(ally, foe, actor){
 
 		if ("Astra"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Astra against "+target.name+"!");
-			var occur=1+Math.floor(Math.random()*4);
+			var occur=1+Math.floor(Math.random()*5);
 			for (var j=0;j<occur;j++){
 				var damage=Math.floor((5000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
 				console.log(target.resolveDamage(damage,1));
@@ -740,14 +755,14 @@ function resolveActor(ally, foe, actor){
 			console.log(actor.name+" invokes Crescent against "+target.name+"!");
 			var occur=2;
 			for (var j=0;j<occur;j++){
-				var damage=Math.floor((10000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
+				var damage=Math.floor((6000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
 				console.log(target.resolveDamage(damage,0.9));
 			}
 		} else if ("Chronicle"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Chronicle against "+target.name+"!");
-			var damage=Math.floor((10000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
+			var damage=Math.floor((6000*actor.patk*(actor.dpatk+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef)));
 			console.log(target.resolveDamage(damage,0.9));
-			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef)));
+			var damage=Math.floor((6000*actor.matk*(actor.dmatk+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef)));
 			console.log(target.resolveDamage(damage,0.9));
 		} else if ("Flare"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Flare against "+target.name+"!");
@@ -798,49 +813,49 @@ function resolveActor(ally, foe, actor){
 		} else if ("Firestorm"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Firestorm against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wate+10))));
-			actor.fire+=1;
+			//actor.fire+=1;
 			target.fros=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Maelstrom"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Maelstrom against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fros+10))));
-			actor.wate+=1;
+			//actor.wate+=1;
 			target.fire=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Icestorm"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Icestorm against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fire+10))));
-			actor.fros+=1;
+			//actor.fros+=1;
 			target.wate=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Thunderstorm"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Thunderstorm against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.elec+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.eart+10))));
-			actor.elec+=1;
+			//actor.elec+=1;
 			target.wind=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Windstorm"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Windstorm against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.wind+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.elec+10))));
-			actor.wind+=1;
+			//actor.wind+=1;
 			target.eart=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Crystal Storm"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Crystal Storm against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.eart+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wind+10))));
-			actor.eart+=1;
+			//actor.eart+=1;
 			target.elec=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Quasar"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Quasar against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
-			actor.ligh+=1;
+			//actor.ligh+=1;
 			target.dark=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Shadowstorm"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Shadowstorm against "+target.name+"!");
 			var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
-			actor.dark+=1;
+			//actor.dark+=1;
 			target.ligh=0;
 			console.log(target.resolveDamage(damage,1));
 		} else if ("Bloody Knife"==ultiNames[actor.attackID]){
@@ -904,13 +919,13 @@ function resolveActor(ally, foe, actor){
 		} else if ("Metathesis"==ultiNames[actor.attackID]){
 			var damage;
 			console.log(actor.name+" invokes Metathesis against "+target.name+"!");
-			damage=Math.floor((2400*actor.patk*(actor.dpatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.dark+10))));
+			damage=Math.floor((2500*actor.patk*(actor.dpatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.dark+10))));
 			console.log(target.resolveDamage(damage,0.9));
-			damage=Math.floor((2400*actor.patk*(actor.dpatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.ligh+10))));
+			damage=Math.floor((2500*actor.patk*(actor.dpatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dpdef+10)*target.pdef*(target.ligh+10))));
 			console.log(target.resolveDamage(damage,0.9));
-			damage=Math.floor((2400*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
+			damage=Math.floor((2500*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
 			console.log(target.resolveDamage(damage,0.9));
-			damage=Math.floor((2400*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
+			damage=Math.floor((2500*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
 			console.log(target.resolveDamage(damage,0.9));
 		} else if ("Dimension Rend"==ultiNames[actor.attackID]){
 			console.log(actor.name+" invokes Dimension Rend against "+target.name+"!");
@@ -951,7 +966,9 @@ function resolveInit(ally, foe, actor){
 	//resolve inits here)
 	for (var i=0;i<actor.initIDs.length;i++){
 		if ("Clear Mind"==initNames[actor.initIDs[i]]){
-			actor.charge=0;
+			for (var j=0;j<actor.chargeIDs.length;j++){
+				actor.chargeIDs[j].charge=chargeNames[actor.chargeIDs[i].name]+0;
+			}
 			console.log(actor.name+" activates "+initNames[actor.initIDs[i]]);
 		} else if ("Angelic Wing"==initNames[actor.initIDs[i]]){
 			actor.reraise=0;
@@ -990,9 +1007,16 @@ function resolveCharge(ally, foe, actor){
 	}
 
 	for (var i=0;i<actor.chargeIDs.length;i++){
-		if (actor.chargeIDs[i].charge===chargeNames[actor.chargeIDs[i].name].charge){
+		if (actor.chargeIDs[i].charge>=chargeNames[actor.chargeIDs[i].name]){
 			console.log(actor.name+" unleashes "+actor.chargeIDs[i].name+"!");
+			actor.chargeIDs[i].charge=0;
 			if ("Kaleidoscope"==actor.chargeIDs[i].name){
+				var temp=actor.attackID;
+				actor.attackID=Math.floor(Math.random()*ultiNames.length);
+				resolveActor(ally, foe, actor);
+				actor.attackID=Math.floor(Math.random()*ultiNames.length);
+				resolveActor(ally, foe, actor);
+				actor.attackID=temp;
 			} else if ("White Wind"==actor.chargeIDs[i].name){
 				var vamp=Math.min(actor.health,9999);
 				var targets;
@@ -1023,30 +1047,157 @@ function resolveCharge(ally, foe, actor){
 					}
 				}
 			} else if ("Vortex"==actor.chargeIDs[i].name){
-				var damage=Math.floor((10000*actor.patk*(0.4+Math.random()))/target.pdef);
-				target.dpatk=0;
-				target.dmatk=0;
-				target.dpdef=0;
-				target.dmdef=0;
-				target.dspd=Math.min(0,target.dspd);
-				console.log(target.name+"'s auras are dispelled!");
-				console.log(target.resolveDamage(damage,1));
-				if (target.damage>target.health){
-					target.permadeath=1;
-					console.log(target.name+" is sucked into a whirling vortex with a horrible scream!");
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((10000*actor.patk*(0.4+Math.random()))/target.pdef);
+					target.dpatk=0;
+					target.dmatk=0;
+					target.dpdef=0;
+					target.dmdef=0;
+					target.dspd=Math.min(0,target.dspd);
+					console.log(target.name+"'s auras are dispelled!");
+					console.log(target.resolveDamage(damage,1));
+					if (target.damage>target.health){
+						target.permadeath=1;
+						console.log(target.name+" is sucked into a whirling vortex with a horrible scream!");
+					}
 				}
 			} else if ("Muspelheim"==actor.chargeIDs[i].name){
-				var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wate+10))));
-				actor.fire=Math.min(10,actor.fire+5);
-				console.log(target.resolveDamage(damage,1));
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wate+10))));
+					console.log(target.resolveDamage(damage,1));
+					damage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.fire+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.wate+10))));
+					console.log(target.resolveDamage(damage,1));
+				}
 			} else if ("Niflheim"==actor.chargeIDs[i].name){
-				var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fire+10))));
-				actor.fros=Math.min(10,actor.fros+5);
-				console.log(target.resolveDamage(damage,1));
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fire+10))));
+					console.log(target.resolveDamage(damage,1));
+					damage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.fros+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fire+10))));
+					console.log(target.resolveDamage(damage,1));
+				}
 			} else if ("Deluge"==actor.chargeIDs[i].name){
-				var damage=Math.floor((10000*actor.matk*(actor.dmatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fros+10))));
-				actor.wate=Math.min(10,actor.wate+5);
-				console.log(target.resolveDamage(damage,1));
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fros+10))));
+					console.log(target.resolveDamage(damage,1));
+					vdamage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.wate+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.fros+10))));
+					console.log(target.resolveDamage(damage,1));
+				}
+			} else if ("Tempest"==actor.chargeIDs[i].name){
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.wind+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.elec+10))));
+					console.log(target.resolveDamage(damage,1));
+					damage=Math.floor((7000*actor.matk*(actor.dmatk+10)*(actor.wind+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.elec+10))));
+					console.log(target.resolveDamage(damage,1));
+				}
+			} else if ("Quake"==actor.chargeIDs[i].name){
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((7000*actor.matk*(actor.dmatk+3)*(actor.eart+3)*(0.8+Math.random()*0.4)/((target.dmdef+3)*target.mdef*(target.wind+3))));
+					console.log(target.resolveDamage(damage,1));
+					damage=Math.floor((7000*actor.matk*(actor.dmatk+3)*(actor.eart+3)*(0.8+Math.random()*0.4)/((target.dmdef+3)*target.mdef*(target.wind+3))));
+					console.log(target.resolveDamage(damage,1));
+				}
+			} else if ("Ragnarok"==actor.chargeIDs[i].name){
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((10000*actor.matk*(actor.dmatk+3)*(actor.elec+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.eart+3))));
+					console.log(target.resolveDamage(damage,1));
+					var damage=Math.floor((10000*actor.matk*(actor.dmatk+3)*(actor.elec+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.eart+3))));
+					console.log(target.resolveDamage(damage,1));
+				}
+			} else if ("Apocalypse"==actor.chargeIDs[i].name){
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((8000*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
+					console.log(target.resolveDamage(damage,1));
+					damage=Math.floor((8000*actor.matk*(actor.dmatk+10)*(actor.ligh+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.ligh+10))));
+					console.log(target.resolveDamage(damage,1));
+				}
+			} else if ("Armageddon"==actor.chargeIDs[i].name){
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((8000*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
+					console.log(target.resolveDamage(damage,1));
+					damage=Math.floor((8000*actor.matk*(actor.dmatk+10)*(actor.dark+10)*(0.8+Math.random()*0.4)/((target.dmdef+10)*target.mdef*(target.dark+10))));
+					console.log(target.resolveDamage(damage,1));
+				}
+			} else if ("Whirling Wing"==actor.chargeIDs[i].name){
+				var targets;
+				if (0===actor.ally){
+					targets=liveA;
+				} else {
+					targets=liveE;
+				}
+				for (var j=0;j<targets.length;j++){
+					var target=targets[j];
+					var damage=Math.floor((6000*actor.matk*(actor.dmatk+3)*(actor.wind+3)*(0.8+Math.random()*0.4)/((target.dmdef+3)*target.mdef*(target.ligh+3))));
+					console.log(target.resolveDamage(damage,1));
+					damage=Math.floor((6000*actor.matk*(actor.dmatk+3)*(actor.ligh+3)*(0.8+Math.random()*0.4)/((target.dmdef+3)*target.mdef*(target.ligh+3))));
+					console.log(target.resolveDamage(damage,1));
+					actor.veil=Math.min(2,actor.veil+1);
+					console.log(actor.name+" is covered by a veil!");
+					actor.screen=Math.min(3,actor.screen+1);
+					console.log(actor.name+" is shielded by a wing!");
+				}
 			}
 		}
 	}
@@ -1396,6 +1547,7 @@ nfoe.ally=0;
 nfoe.speed=13;
 nfoe.activeIDs.push(10);
 nfoe.activeIDs.push(12);
+nfoe.chargeIDs.push(new ChargeAttack("Kaleidoscope"));
 nfoe.matk=nfoe.matk/4;
 nfoe.patk=nfoe.matk/4;
 nfoe.mdef=nfoe.mdef*2;
